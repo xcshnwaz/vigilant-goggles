@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: audiobot
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn bot:app --bind 0.0.0.0:$PORT --workers 1 --timeout 300"
+    envVars:
+      - key: BOT_TOKEN
+        sync: false          # set manually in Render dashboard
+      - key: BOT_NAME
+        value: AudioBot
+      - key: LOG_LEVEL
+        value: INFO
+      - key: MONGO_URI
+        sync: false          # set manually — use MongoDB Atlas connection string
+      - key: MONGO_DB_NAME
+        value: audiobot
+      - key: FFMPEG_TIMEOUT
+        value: "180"
+      - key: AUDIO_BITRATE
+        value: "192k"
+      - key: AUDIO_SAMPLERATE
+        value: "44100"
+      - key: MAX_FILE_BYTES
+        value: "52428800"
+    # Render free plan spins down - use paid plan or keep-alive ping for 24/7
+    healthCheckPath: /health
